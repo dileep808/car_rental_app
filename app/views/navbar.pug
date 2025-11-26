@@ -1,16 +1,23 @@
 doctype html
-html
+html(lang="en")
   head
-    title= title
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Velocity Rentals | Navbar
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
     link(rel="stylesheet", href="/navbar.css")
   body
-    nav.navbar
-      a.brand(href="#")
-        span.brand-badge CR
-        span CarRental
-      div.nav-links
-        a(href="#deals") Deals
-        a(href="#locations") Locations
-        a(href="#support") Support
-        a.cta(href="#book") Book a Ride
-
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href="#top") Home
+            a(href="#features") Features
+            a(href="#reviews") Reviews
+            a(href="#contact") Contact
+          .auth-buttons
+            a.btn.btn-outline(href="#") Login
+            a.btn.btn-primary(href="#") Sign Up

@@ -1,20 +1,24 @@
 :root {
-  --brand: #0f6fff;
-  --dark: #0b1a30;
-  --muted: #5f6b80;
-  --bg: #f4f7fb;
-  --accent: #0f6fff;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --secondary: #64748b;
+  --accent: #f59e0b;
+  --dark: #1e293b;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --radius: 10px;
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  margin: 0;
-  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  background: var(--bg);
+  background-color: #f1f5f9;
   color: var(--dark);
+  line-height: 1.6;
 }
 
 a {
@@ -22,87 +26,100 @@ a {
   color: inherit;
 }
 
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #fff;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-  padding: 14px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.brand {
+header {
+  background: white;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  color: var(--dark);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
 }
 
-.brand-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--brand), #5bc3ff);
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-weight: 900;
+.logo i {
+  color: var(--accent);
 }
 
 .nav-links {
   display: flex;
-  align-items: center;
-  gap: 18px;
-  font-weight: 600;
-  color: var(--muted);
+  gap: 1.5rem;
 }
 
 .nav-links a {
-  padding: 10px 12px;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+  color: var(--secondary);
+  font-weight: 600;
+  transition: color 0.3s;
 }
 
 .nav-links a:hover,
 .nav-links a:focus {
-  color: var(--dark);
-  background: rgba(15, 111, 255, 0.08);
+  color: var(--primary);
 }
 
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #fff;
+.auth-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn {
+  padding: 0.55rem 1.4rem;
+  border-radius: var(--radius);
   font-weight: 700;
-  box-shadow: 0 10px 30px rgba(15, 111, 255, 0.25);
-}
-
-.cta:hover {
-  opacity: 0.92;
-}
-
-.hero {
-  padding: 64px 32px;
-  max-width: 960px;
-  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  display: inline-block;
   text-align: center;
 }
 
-.hero h1 {
-  margin-bottom: 12px;
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
 }
 
-.hero p {
-  color: var(--muted);
-  margin-top: 0;
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
 }

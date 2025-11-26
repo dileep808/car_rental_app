@@ -1,0 +1,136 @@
+//- homepage.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Velocity Rentals | Find Your Perfect Car
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/home.css")
+  body#top
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href="#top") Home
+            a(href="#features") Features
+            a(href="#reviews") Reviews
+            a(href="#contact") Contact
+          .auth-buttons
+            a.btn.btn-outline(href="#") Login
+            a.btn.btn-primary(href="#") Sign Up
+
+    // Hero Section
+    section.hero
+      .container
+        .hero-content
+          h1 Find Your Perfect Ride
+          p Discover the best car rental deals with Velocity. Easy booking, transparent pricing, and reliable availability.
+          a.btn.btn-primary(href="#features") Explore the Platform
+
+    // Features Section
+    section#features
+      .container
+        .section-title
+          h2 Built to Prevent Pain Points
+          p Unified dashboards, double-booking prevention, and automated pricing so teams and customers trust every booking.
+        .features
+          .feature-card
+            .feature-icon
+              i.fas.fa-shield-alt
+            h3 Double-Booking Protection
+            p Availability checks across app and database layers to keep calendars clean.
+          .feature-card
+            .feature-icon
+              i.fas.fa-tags
+            h3 Transparent Pricing
+            p Duration-based pricing with clear totals before checkout to build trust.
+          .feature-card
+            .feature-icon
+              i.fas.fa-chart-line
+            h3 Owner Dashboard
+            p Real-time view of total cars, booked, available, and returning today.
+          .feature-card
+            .feature-icon
+              i.fas.fa-bolt
+            h3 Faster Ops
+            p Streamlined CRUD for cars, customers, and bookings to cut manual errors.
+
+    // Reviews Section
+    section#reviews
+      .container
+        .section-title
+          h2 Reviews
+          p Early feedback from the teams we designed for.
+        .reviews
+          .review-card
+            p.quote “Booking was instant and pricing was clear—no surprises at pickup.”
+            p.reviewer — Amelia, Customer
+          .review-card
+            p.quote “Finally one place to see returns and open bookings for today.”
+            p.reviewer — Oliver, Owner
+          .review-card
+            p.quote “Availability alerts stopped duplicate bookings before they happened.”
+            p.reviewer — Ops Team
+
+    // Footer
+    footer#contact
+      .container
+        .footer-content
+          .footer-column
+            h3 Velocity Rentals
+            p Renting made simple, journeys made memorable.
+            .social-links
+              a(href="#")
+                i.fab.fa-facebook-f
+              a(href="#")
+                i.fab.fa-twitter
+              a(href="#")
+                i.fab.fa-instagram
+              a(href="#")
+                i.fab.fa-linkedin-in
+
+          .footer-column
+            h3 Quick Links
+            ul.footer-links
+              li
+                a(href="#top") Home
+              li
+                a(href="#features") Features
+              li
+                a(href="#reviews") Reviews
+              li
+                a(href="#contact") Contact
+
+          .footer-column
+            h3 Services
+            ul.footer-links
+              li
+                a(href="#") Car Rental
+              li
+                a(href="#") Long Term Rental
+              li
+                a(href="#") Business Rental
+              li
+                a(href="#") Airport Transfer
+              li
+                a(href="#") Luxury Cars
+
+          .footer-column
+            h3 Contact Info
+            ul.footer-links
+              li
+                i.fas.fa-map-marker-alt
+                |  123 Drive Street, London
+              li
+                i.fas.fa-phone
+                |  +44 20 1234 5678
+              li
+                i.fas.fa-envelope
+                |  info@velocityrentals.com
+
+        .copyright
+          p &copy; 2024 Velocity Rentals. All rights reserved.
