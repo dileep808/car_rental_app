@@ -1,0 +1,108 @@
+:root {
+  --brand: #0f6fff;
+  --dark: #0b1a30;
+  --muted: #5f6b80;
+  --bg: #f4f7fb;
+  --accent: #0f6fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--dark);
+}
+
+.brand-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand), #5bc3ff);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 900;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.nav-links a {
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus {
+  color: var(--dark);
+  background: rgba(15, 111, 255, 0.08);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(15, 111, 255, 0.25);
+}
+
+.cta:hover {
+  opacity: 0.92;
+}
+
+.hero {
+  padding: 64px 32px;
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero h1 {
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: var(--muted);
+  margin-top: 0;
+}

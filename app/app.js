@@ -18,7 +18,7 @@ const db = require('./services/db');
 
 // Render a simple Pug view to verify templating works
 app.get("/", function(req, res) {
-    res.render("home", { title: "Car Rental", message: "Car Rental" });
+    res.render("navbar", { title: "Car Rental", message: "Car Rental" });
 });
 
 
