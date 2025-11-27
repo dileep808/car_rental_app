@@ -1,0 +1,16 @@
+//- Sidebar partial for dashboard pages
+mixin sidebar(active)
+  aside.sidebar
+    .sidebar-logo
+      i.fas.fa-car
+      span Velocity Rentals
+    nav.sidebar-nav
+      a.sidebar-link(class=active==='dashboard' ? 'active' : '', href="/dashboard")
+        i.fas.fa-chart-pie
+        span Dashboard
+      a.sidebar-link(class=active==='profile' ? 'active' : '', href="/profile")
+        i.fas.fa-user
+        span Profile
+      a.sidebar-link(href="/login")
+        i.fas.fa-right-from-bracket
+        span Logout
