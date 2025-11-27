@@ -25,6 +25,10 @@ app.get("/login", function(req, res) {
     res.render("login", { title: "Login | Velocity Rentals" });
 });
 
+app.get("/registration", function(req, res) {
+    res.render("registration", { title: "Create Account | Velocity Rentals" });
+});
+
 
 // Start server on port 3000
 app.listen(3000,function(){

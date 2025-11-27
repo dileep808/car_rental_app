@@ -152,7 +152,8 @@ form {
   font-weight: 700;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
   width: 100%;
   padding: 14px 14px;
   border-radius: 12px;
@@ -162,7 +163,8 @@ form {
   transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.input-group select:focus {
   outline: none;
   border-color: var(--primary);
   background: #ffffff;
@@ -197,6 +199,18 @@ form {
 
 .forgot-link:hover {
   opacity: 0.8;
+}
+
+.form-footnote {
+  color: var(--secondary);
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.form-footnote a {
+  color: var(--primary);
+  font-weight: 800;
+  margin-left: 6px;
 }
 
 .auth-shell .btn {

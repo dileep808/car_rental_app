@@ -1,0 +1,79 @@
+//- registration.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Create Account | Velocity Rentals
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/login.css")
+  body.auth-page
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href="/#top") Home
+            a(href="/#features") Features
+            a(href="/#reviews") Reviews
+            a(href="/#contact") Contact
+          .auth-buttons
+            a.btn.btn-outline(href="/login") Login
+            a.btn.btn-primary(href="/registration") Sign Up
+
+    .page-content.container
+      .auth-shell
+        .brand-panel
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          h1 Build your account.
+          p.lead Create a workspace for your fleet, invite teammates, and start taking bookings with confidence.
+
+          .metrics
+            .metric
+              h3 5 min
+              p From signup to first booking
+            .metric
+              h3 0 fees
+              p Transparent pricing and payouts
+            .metric
+              h3 2x trust
+              p Verified drivers and secure payments
+
+        .form-panel
+          .form-header
+            h2 Create your account
+            p Manage your cars, bookings, and returns from a single dashboard.
+
+          form(action="/registration", method="post")
+            .input-group
+              label(for="fullName") Full name
+              input#fullName(type="text", name="fullName", placeholder="Full Name", required=true)
+            .input-group
+              label(for="email") Work email
+              input#email(type="email", name="email", placeholder="you@company.com", required=true)
+            .input-group
+              label(for="phone") Phone number
+              input#phone(type="tel", name="phone", placeholder="+44 20 1234 5678", required=true)
+            .input-group
+              label(for="role") Role
+              select#role(name="role", required=true)
+                option(value="") Select your role
+                option(value="customer") Customer 
+                option(value="agent") Front desk / Agent
+            .input-group
+              label(for="password") Password
+              input#password(type="password", name="password", placeholder="Create a password", required=true)
+            .input-group
+              label(for="confirmPassword") Confirm password
+              input#confirmPassword(type="password", name="confirmPassword", placeholder="Re-enter password", required=true)
+            .form-meta
+              label.checkbox
+                input(type="checkbox", name="terms", required=true)
+                span I agree to the Terms and Privacy Policy
+              a.forgot-link(href="/login") Already have an account?
+            button.btn.btn-primary(type="submit") Create account
