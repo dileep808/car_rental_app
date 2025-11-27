@@ -4,6 +4,9 @@ const express = require("express");
 // Create express app
 var app = express();
 
+// Enable JSON parsing for APIs
+app.use(express.json());
+
 // Configure Pug  views in app/views
 app.set("view engine", "pug");
 app.set("views", "app/views");
@@ -27,6 +30,55 @@ app.get("/login", function(req, res) {
 
 app.get("/registration", function(req, res) {
     res.render("registration", { title: "Create Account | Velocity Rentals" });
+});
+
+app.get("/dashboard", async function(req, res) {
+    try {
+        const metricsRows = await db.query("SELECT * FROM dashboard_metrics LIMIT 1");
+        const metrics = metricsRows[0] || {};
+
+        const bookings = await db.query(
+            `SELECT 
+                b.id,
+                c.make,
+                c.model,
+                c.year,
+                CONCAT(cu.first_name, ' ', cu.last_name) AS customer,
+                b.status,
+                b.start_date,
+                b.end_date,
+                b.total_price
+             FROM bookings b
+             JOIN cars c ON b.car_id = c.id
+             JOIN customers cu ON b.customer_id = cu.id
+             WHERE b.status IN ('booked','ongoing')
+             ORDER BY b.start_date ASC
+             LIMIT 25`
+        );
+
+        const fleet = await db.query(
+            `SELECT id, make, model, year, status, daily_rate, location
+             FROM cars
+             ORDER BY status, make, model`
+        );
+
+        res.render("dashboard", {
+            metrics,
+            bookings,
+            fleet,
+            title: "Fleet Dashboard | Velocity Rentals",
+            error: null,
+        });
+    } catch (err) {
+        console.error("Failed to load dashboard data:", err);
+        res.render("dashboard", {
+            metrics: {},
+            bookings: [],
+            fleet: [],
+            title: "Fleet Dashboard | Velocity Rentals",
+            error: "Unable to load dashboard data",
+        });
+    }
 });
 
 

@@ -1,0 +1,153 @@
+//- dashboard.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Fleet Dashboard | Velocity Rentals
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/dashboard.css")
+  body
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href="/") Home
+            a(href="/dashboard#overview") Overview
+            a(href="/dashboard#bookings") Bookings
+            a(href="/dashboard#fleet") Fleet
+          .auth-buttons
+            a.btn.btn-outline(href="/login") Login
+            a.btn.btn-primary(href="/registration") Sign Up
+
+    main.dashboard
+      - const m = metrics || {};
+      - const money = (v) => `£${Number(v || 0).toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+      - const fmtDate = (v) => {
+      -   if (!v) return '—';
+      -   const d = new Date(v);
+      -   return isNaN(d.getTime()) ? v : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      - };
+      if error
+        .error-banner Unable to load latest data: #{error}
+
+      section.hero#overview
+        .container
+          .hero-content.dashboard-hero
+            .eyebrow Live Overview
+            h1 Fleet dashboard
+            p Track availability, active bookings, pickups, returns, and revenue at a glance.
+            .quick-actions
+              a.btn.btn-primary(href="#bookings") View bookings
+              a.btn.btn-outline(href="#fleet") Manage fleet
+
+      section#stats
+        .container
+          .section-title
+            h2 Key metrics
+            p Snapshots driven by your `dashboard_metrics` view.
+          .stats-grid
+            .stat-card
+              .stat-label Total cars
+              .stat-value= m.total_cars || 0
+              .stat-trend.text-positive
+                i.fas.fa-car
+                span Fleet size stable
+            .stat-card
+              .stat-label Available now
+              .stat-value= m.cars_available || 0
+              .stat-trend.text-positive
+                i.fas.fa-check-circle
+                span Ready to rent
+            .stat-card
+              .stat-label Active bookings
+              .stat-value= m.active_bookings || 0
+              .stat-trend.text-warning
+                i.fas.fa-clock
+                span Monitor returns
+            .stat-card
+              .stat-label Pickups today
+              .stat-value= m.pickups_today || 0
+              .stat-trend
+                i.fas.fa-calendar-day
+                span Confirm keys
+            .stat-card
+              .stat-label Returns today
+              .stat-value= m.returns_today || 0
+              .stat-trend
+                i.fas.fa-undo
+                span Prep inspections
+            .stat-card
+              .stat-label Revenue (MTD)
+              .stat-value= money(m.revenue_this_month || 0)
+              .stat-trend.text-positive
+                i.fas.fa-arrow-up
+                span Closed from completed
+
+      section#bookings
+        .container
+          .section-title
+            h2 Active bookings
+            p Upcoming and in-progress rentals that affect availability.
+          .card
+            table.data-table
+              thead
+                tr
+                  th Booking
+                  th Car
+                  th Customer
+                  th Status
+                  th Start
+                  th End
+                  th Total
+              tbody
+                if bookings && bookings.length
+                  each b in bookings
+                    - const badgeClass = (() => { const s = (b.status || '').toLowerCase(); if (s === 'available') return 'badge-available'; if (s === 'ongoing') return 'badge-ongoing'; if (s === 'maintenance') return 'badge-maintenance'; return 'badge-booked'; })();
+                    tr
+                      td #{'#' + b.id}
+                      td #{b.make} #{b.model} (#{b.year})
+                      td #{b.customer}
+                      td
+                        span(class=`badge ${badgeClass}`)= b.status || '—'
+                      td #{fmtDate(b.start_date)}
+                      td #{fmtDate(b.end_date)}
+                      td= money(b.total_price)
+                else
+                  tr
+                    td(colspan="7") No active bookings.
+
+      section#fleet
+        .container
+          .section-title
+            h2 Fleet status
+            p Inventory split by availability and location.
+          .card
+            table.data-table
+              thead
+                tr
+                  th Car
+                  th Location
+                  th Rate / day
+                  th Status
+              tbody
+                if fleet && fleet.length
+                  each car in fleet
+                    - const badgeClass = (() => { const s = (car.status || '').toLowerCase(); if (s === 'available') return 'badge-available'; if (s === 'maintenance') return 'badge-maintenance'; return 'badge-booked'; })();
+                    tr
+                      td #{car.make} #{car.model} (#{car.year})
+                      td #{car.location || '—'}
+                      td= money(car.daily_rate)
+                      td
+                        span(class=`badge ${badgeClass}`)= car.status || '—'
+                else
+                  tr
+                    td(colspan="4") No cars found.
+
+    footer
+      .container.footer-meta
+        span Velocity Rentals
