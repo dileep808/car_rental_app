@@ -1,0 +1,64 @@
+//- login.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Login | Velocity Rentals
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/login.css")
+  body.auth-page
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href="/#top") Home
+            a(href="/#features") Features
+            a(href="/#reviews") Reviews
+            a(href="/#contact") Contact
+          .auth-buttons
+            a.btn.btn-outline(href="/login") Login
+            a.btn.btn-primary(href="/login#create-account") Sign Up
+
+    .page-content.container
+      .auth-shell
+        .brand-panel
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          h1 Welcome back.
+          p.lead Stay on top of bookings, fleet health, and returns with a single clean login.
+
+          .metrics
+            .metric
+              h3 120+
+              p Cars under management
+            .metric
+              h3 99.9%
+              p Uptime on booking API
+            .metric
+              h3 24/7
+              p Support for critical returns
+
+        .form-panel
+          .form-header
+            h2 Sign in
+            p Start with your work email—no passwords shared across teams.
+
+          form(action="/login", method="post")
+            .input-group
+              label(for="email") Work email
+              input#email(type="email", name="email", placeholder="you@company.com", required=true)
+            .input-group
+              label(for="password") Password
+              input#password(type="password", name="password", placeholder="Enter your password", required=true)
+            .form-meta
+              label.checkbox
+                input(type="checkbox", name="remember")
+                span Remember me on this device
+              a.forgot-link(href="#") Forgot access?
+            button.btn.btn-primary(type="submit") Continue
