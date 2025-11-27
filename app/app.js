@@ -34,8 +34,18 @@ app.get("/registration", function(req, res) {
 
 app.get("/dashboard", async function(req, res) {
     try {
+        const search = (req.query.search || "").trim();
+        const likeSearch = `%${search}%`;
+
         const metricsRows = await db.query("SELECT * FROM dashboard_metrics LIMIT 1");
         const metrics = metricsRows[0] || {};
+
+        let bookingsWhere = "b.status IN ('booked','ongoing')";
+        const bookingParams = [];
+        if (search) {
+            bookingsWhere += " AND (c.make LIKE ? OR c.model LIKE ? OR CONCAT(cu.first_name, ' ', cu.last_name) LIKE ?)";
+            bookingParams.push(likeSearch, likeSearch, likeSearch);
+        }
 
         const bookings = await db.query(
             `SELECT 
@@ -51,21 +61,32 @@ app.get("/dashboard", async function(req, res) {
              FROM bookings b
              JOIN cars c ON b.car_id = c.id
              JOIN customers cu ON b.customer_id = cu.id
-             WHERE b.status IN ('booked','ongoing')
+             WHERE ${bookingsWhere}
              ORDER BY b.start_date ASC
-             LIMIT 25`
+             LIMIT 25`,
+            bookingParams
         );
+
+        let fleetWhere = "1=1";
+        const fleetParams = [];
+        if (search) {
+            fleetWhere = "(make LIKE ? OR model LIKE ? OR location LIKE ?)";
+            fleetParams.push(likeSearch, likeSearch, likeSearch);
+        }
 
         const fleet = await db.query(
             `SELECT id, make, model, year, status, daily_rate, location
              FROM cars
-             ORDER BY status, make, model`
+             WHERE ${fleetWhere}
+             ORDER BY status, make, model`,
+            fleetParams
         );
 
         res.render("dashboard", {
             metrics,
             bookings,
             fleet,
+            search,
             title: "Fleet Dashboard | Velocity Rentals",
             error: null,
         });
@@ -75,6 +96,7 @@ app.get("/dashboard", async function(req, res) {
             metrics: {},
             bookings: [],
             fleet: [],
+            search: "",
             title: "Fleet Dashboard | Velocity Rentals",
             error: "Unable to load dashboard data",
         });

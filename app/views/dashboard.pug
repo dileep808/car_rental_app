@@ -17,6 +17,7 @@ html(lang="en")
     -   const d = new Date(v);
     -   return isNaN(d.getTime()) ? v : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
     - };
+    - const searchTerm = search || '';
 
     .sidebar-shell
       +sidebar('dashboard')
@@ -31,15 +32,21 @@ html(lang="en")
               .eyebrow Live Overview
               h1 Fleet dashboard
               p Track availability, active bookings, pickups, returns, and revenue at a glance.
+              form.search-bar(action="/dashboard", method="get")
+                input(type="text", name="search", placeholder="Search bookings or fleet...", value=searchTerm)
+                button.btn.btn-primary(type="submit") Search
+                if searchTerm
+                  a.btn.btn-outline(href="/dashboard") Clear
               .quick-actions
                 a.btn.btn-primary(href="#bookings") View bookings
                 a.btn.btn-outline(href="#fleet") Manage fleet
+              if searchTerm
+                p.search-hint Showing results for "#{searchTerm}"
 
         section#stats
           .container
             .section-title
               h2 Key metrics
-              p Snapshots driven by your `dashboard_metrics` view.
             .stats-grid
               .stat-card
                 .stat-label Total cars
