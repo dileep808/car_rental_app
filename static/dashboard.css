@@ -272,6 +272,26 @@ body {
   font-weight: 700;
 }
 
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.detail-card {
+  background: #ffffff;
+  border-radius: var(--radius);
+  padding: 14px 14px 10px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.detail-card .label {
+  color: var(--secondary);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
 .sidebar-shell {
   min-height: 100vh;
   display: grid;

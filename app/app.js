@@ -103,6 +103,70 @@ app.get("/dashboard", async function(req, res) {
     }
 });
 
+// Car details page
+app.get("/details/:carId", async function(req, res) {
+    const carId = Number(req.params.carId);
+    if (!Number.isInteger(carId)) {
+        return res.status(400).render("details", {
+            car: null,
+            bookings: [],
+            title: "Car Details | Velocity Rentals",
+            error: "Invalid car id",
+        });
+    }
+
+    try {
+        const carRows = await db.query(
+            `SELECT id, make, model, year, status, daily_rate, location, created_at
+             FROM cars
+             WHERE id = ?
+             LIMIT 1`,
+            [carId]
+        );
+
+        const car = carRows[0];
+        if (!car) {
+            return res.status(404).render("details", {
+                car: null,
+                bookings: [],
+                title: "Car Details | Velocity Rentals",
+                error: "Car not found",
+            });
+        }
+
+        const bookings = await db.query(
+            `SELECT 
+                b.id,
+                b.start_date,
+                b.end_date,
+                b.status,
+                b.total_price,
+                CONCAT(cu.first_name, ' ', cu.last_name) AS customer
+             FROM bookings b
+             JOIN customers cu ON cu.id = b.customer_id
+             WHERE b.car_id = ?
+             ORDER BY b.start_date DESC
+             LIMIT 20`,
+            [carId]
+        );
+
+        res.render("details", {
+            car,
+            bookings,
+            title: `${car.make} ${car.model} | Velocity Rentals`,
+            error: null,
+        });
+    } catch (err) {
+        console.error("Failed to load car details:", err);
+        res.status(500).render("details", {
+            car: null,
+            bookings: [],
+            title: "Car Details | Velocity Rentals",
+            error: "Unable to load car details",
+        });
+    }
+});
+
 
 // Start server on port 3000
 app.listen(3000,function(){

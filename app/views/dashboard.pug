@@ -131,6 +131,7 @@ html(lang="en")
                     th Location
                     th Rate / day
                     th Status
+                    th Details
                 tbody
                   if fleet && fleet.length
                     each car in fleet
@@ -141,9 +142,11 @@ html(lang="en")
                         td= money(car.daily_rate)
                         td
                           span(class=`badge ${badgeClass}`)= car.status || '—'
+                        td
+                          a.btn.btn-outline(href=`/details/${car.id}`) View
                   else
                     tr
-                      td(colspan="4") No cars found.
+                      td(colspan="5") No cars found.
 
     footer
       .container.footer-meta
