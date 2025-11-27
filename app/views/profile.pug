@@ -1,0 +1,37 @@
+//- profile.pug
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Profile | Velocity Rentals
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/dashboard.css")
+  include sidebar.pug
+  body
+    .sidebar-shell
+      +sidebar('profile')
+      main.sidebar-content.dashboard
+        section.hero#overview
+          .container
+            .hero-content.dashboard-hero
+              .eyebrow Profile
+              h1 Coming soon
+              p Manage your account, preferences, and notifications—all from one place.
+              .quick-actions
+                a.btn.btn-outline(href="/dashboard") Back to dashboard
+
+        section
+          .container
+            .card
+              .section-title
+                h2 We're building this area
+                p Expect settings for account, team, notifications, and security.
+              p Coming soon. Check back later.
+
+    footer
+      .container.footer-meta
+        span Velocity Rentals
+        span •
+        span Profile

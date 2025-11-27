@@ -103,6 +103,10 @@ app.get("/dashboard", async function(req, res) {
     }
 });
 
+app.get("/profile", function(req, res) {
+    res.render("profile", { title: "Profile | Velocity Rentals" });
+});
+
 // Car details page
 app.get("/details/:carId", async function(req, res) {
     const carId = Number(req.params.carId);
