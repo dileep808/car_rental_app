@@ -1,8 +1,8 @@
+version: '3.3'
 services:
   web:
     build:
       context: ./
-    container_name: car-rental-pg-sd2-web
     volumes:
       - .:/src
     command: supervisor -e '.' index.js
@@ -12,7 +12,6 @@ services:
       - db
   db:
     image: mysql
-    container_name: car-rental-pg-sd2-db
     restart: always
     env_file:
       - ./.env
@@ -22,15 +21,8 @@ services:
       - ./db:/var/lib/mysql
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
-    container_name: car-rental-pg-sd2-phpmyadmin
     restart: always
-    depends_on:
-      - db
     env_file:
       - ./.env
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
     ports:
       - "8081:80"
