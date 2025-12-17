@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    title= title
+    link(rel="stylesheet", href="/dashboard.css")
+
+  body
+    .container
+      h1= title
+
+      form(method="post", action=action)
+        label Make
+        input(type="text", name="make", value=car.make || "", required)
+
+        label Model
+        input(type="text", name="model", value=car.model || "", required)
+
+        label Year
+        input(type="number", name="year", value=car.year || "", required)
+
+        label Daily Rate
+        input(type="number", step="0.01", name="daily_rate", value=car.daily_rate || "", required)
+
+        label Location
+        input(type="text", name="location", value=car.location || "")
+
+        label Status
+        select(name="status")
+          option(value="available", selected=car.status=="available") available
+          option(value="booked", selected=car.status=="booked") booked
+          option(value="maintenance", selected=car.status=="maintenance") maintenance
+
+        br
+        button(type="submit") Save
+        a(href="/dashboard") Cancel

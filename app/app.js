@@ -6,6 +6,8 @@ const db = require('./services/db');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const { Car } = require("./models/car");
+
 
 // Create express app
 const app = express();
@@ -31,6 +33,14 @@ app.set("views", "app/views");
 
 // Static files
 app.use(express.static("static"));
+
+function requireAgent(req, res, next) {
+    if (!req.session.uid || req.session.role !== 'agent') {
+        return res.status(403).send("Access denied");
+    }
+    next();
+}
+
 
 /* ===========================
    ROUTES
@@ -244,6 +254,67 @@ app.get("/profile", async (req, res) => {
 
     res.render("profile", { title: "Profile", user });
 });
+
+
+app.get("/cars/add", requireAgent, (req, res) => {
+    res.render("car-form", {
+        title: "Add Car",
+        action: "/cars/add",
+        car: {}
+    });
+});
+
+
+app.post("/cars/add", requireAgent, async (req, res) => {
+    try {
+        const car = new Car(req.body);
+        await car.create();
+        res.redirect("/dashboard");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Failed to add car");
+    }
+});
+
+app.get("/cars/edit/:id", requireAgent, async (req, res) => {
+    const carObj = new Car({ id: req.params.id });
+    const car = await carObj.getById();
+
+    if (!car) return res.status(404).send("Car not found");
+
+    res.render("car-form", {
+        title: "Edit Car",
+        action: `/cars/edit/${car.id}`,
+        car
+    });
+});
+
+app.post("/cars/edit/:id", requireAgent, async (req, res) => {
+    try {
+        const car = new Car({
+            id: req.params.id,
+            ...req.body
+        });
+
+        await car.update();
+        res.redirect("/dashboard");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Failed to update car");
+    }
+});
+
+app.post("/cars/delete/:id", requireAgent, async (req, res) => {
+    try {
+        const car = new Car({ id: req.params.id });
+        await car.delete();
+        res.redirect("/dashboard");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Failed to delete car");
+    }
+});
+
 
 // Start server
 app.listen(3000, () => {
