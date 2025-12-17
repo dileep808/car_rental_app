@@ -1,95 +1,95 @@
-const db = require('../services/db');
+const db = require("../services/db");
 
 class Car {
+  id;
+  make;
+  model;
+  year;
+  daily_rate;
+  location;
+  status;
+  created_by;
 
-    id;
-    make;
-    model;
-    year;
-    daily_rate;
-    location;
-    status;
+  constructor({
+    id = null,
+    make = null,
+    model = null,
+    year = null,
+    daily_rate = null,
+    location = null,
+    status = "available",
+    created_by = null,
+  }) {
+    this.id = id;
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.daily_rate = daily_rate;
+    this.location = location;
+    this.status = status;
+    this.created_by = created_by;
+  }
 
-    constructor({
-        id = null,
-        make = null,
-        model = null,
-        year = null,
-        daily_rate = null,
-        location = null,
-        status = 'available'
-    }) {
-        this.id = id;
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.daily_rate = daily_rate;
-        this.location = location;
-        this.status = status;
-    }
+  // 🔹 Get car by ID (with owner)
+  async getById() {
+    const result = await db.query("SELECT * FROM cars WHERE id = ?", [this.id]);
+    return result.length ? result[0] : null;
+  }
 
-    // 🔹 Get all cars
-    static async getAll() {
-        return await db.query("SELECT * FROM cars ORDER BY created_at DESC");
-    }
+  // 🔹 Create car (agent only)
+  async create() {
+    const result = await db.query(
+      `
+            INSERT INTO cars
+            (make, model, year, daily_rate, location, status, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
+      [
+        this.make,
+        this.model,
+        this.year,
+        this.daily_rate,
+        this.location,
+        this.status,
+        this.created_by,
+      ]
+    );
 
-    // 🔹 Get car by ID
-    async getById() {
-        const result = await db.query(
-            "SELECT * FROM cars WHERE id = ?",
-            [this.id]
-        );
+    this.id = result.insertId;
+    return this.id;
+  }
 
-        return result.length ? result[0] : null;
-    }
-
-    // 🔹 Create car
-    async create() {
-        const result = await db.query(`
-            INSERT INTO cars (make, model, year, daily_rate, location, status)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `, [
-            this.make,
-            this.model,
-            this.year,
-            this.daily_rate,
-            this.location,
-            this.status
-        ]);
-
-        this.id = result.insertId;
-        return this.id;
-    }
-
-    // 🔹 Update car
-    async update() {
-        await db.query(`
+  // 🔹 Update car (only owner)
+  async update() {
+    const result = await db.query(
+      `
             UPDATE cars
             SET make=?, model=?, year=?, daily_rate=?, location=?, status=?
-            WHERE id=?
-        `, [
-            this.make,
-            this.model,
-            this.year,
-            this.daily_rate,
-            this.location,
-            this.status,
-            this.id
-        ]);
+            WHERE id=? AND created_by=?
+        `,
+      [
+        this.make,
+        this.model,
+        this.year,
+        this.daily_rate,
+        this.location,
+        this.status,
+        this.id,
+        this.created_by,
+      ]
+    );
 
-        return true;
-    }
+    return result.affectedRows > 0;
+  }
 
-    // 🔹 Delete car
-    async delete() {
-        await db.query(
-            "DELETE FROM cars WHERE id = ?",
-            [this.id]
-        );
-        return true;
-    }
+  // 🔹 Delete car (only owner)
+  async delete() {
+    const result = await db.query(
+      "DELETE FROM cars WHERE id=? AND created_by=?",
+      [this.id, this.created_by]
+    );
+    return result.affectedRows > 0;
+  }
 }
 
-module.exports = {
-    Car
-};
+module.exports = { Car };

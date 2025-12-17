@@ -424,3 +424,83 @@ body {
     padding: 12px 12px;
   }
 }
+
+/* ===============================
+   VEHICLE FORM – INPUT UI FIX
+   =============================== */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Labels */
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* Inputs & Selects */
+.form-control {
+  height: 46px;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Placeholder */
+.form-control::placeholder {
+  color: #9ca3af;
+}
+
+/* Focus state */
+.form-control:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Select dropdown arrow */
+select.form-control {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #6b7280 50%),
+    linear-gradient(135deg, #6b7280 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 19px,
+    calc(100% - 12px) 19px;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+/* Card spacing improvement */
+.card {
+  padding: 30px;
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+/* Mobile polish */
+@media (max-width: 640px) {
+  .form-control {
+    height: 44px;
+  }
+}

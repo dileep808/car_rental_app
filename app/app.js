@@ -72,7 +72,13 @@ app.post("/authenticate", async (req, res) => {
 
         req.session.uid = user.id;
         req.session.role = user.role;
-        res.redirect("/dashboard");
+
+        if (user.role === "agent") {
+          return res.redirect("/dashboard");
+        } else {
+          return res.redirect("/customer-dashboard");
+        }
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Login failed");
@@ -134,6 +140,9 @@ app.get("/logout", (req, res) => {
 
 app.get("/dashboard", async (req, res) => {
     if (!req.session.uid) return res.redirect("/login");
+    if (req.session.role !== 'agent') {
+        return res.redirect("/customer-dashboard");
+    }
 
     try {
         const search = (req.query.search || "").trim();
@@ -143,43 +152,55 @@ app.get("/dashboard", async (req, res) => {
             "SELECT * FROM dashboard_metrics LIMIT 1"
         ))[0] || {};
 
-        let bookingWhere = "b.status IN ('booked','ongoing')";
-        const params = [];
+        let bookingWhere = `
+            b.status IN ('booked','ongoing')
+            AND c.created_by = ?
+        `;
+        const bookingParams = [req.session.uid];
 
         if (search) {
             bookingWhere += `
-              AND (
-                c.make LIKE ? OR
-                c.model LIKE ? OR
-                u.full_name LIKE ?
-              )`;
-            params.push(likeSearch, likeSearch, likeSearch);
+                AND (
+                    c.make LIKE ? OR
+                    c.model LIKE ? OR
+                    u.full_name LIKE ?
+                )
+            `;
+            bookingParams.push(likeSearch, likeSearch, likeSearch);
         }
 
         const bookings = await db.query(`
             SELECT
-              b.id,
-              c.make,
-              c.model,
-              c.year,
-              u.full_name AS customer,
-              b.status,
-              b.start_date,
-              b.end_date,
-              b.total_price
+                b.id,
+                c.make,
+                c.model,
+                c.year,
+                u.full_name AS customer,
+                b.status,
+                b.start_date,
+                b.end_date,
+                b.total_price
             FROM bookings b
             JOIN cars c ON b.car_id = c.id
             JOIN users u ON b.user_id = u.id
             WHERE ${bookingWhere}
             ORDER BY b.start_date ASC
             LIMIT 25
-        `, params);
-
+        `, bookingParams);
         const fleet = await db.query(`
-            SELECT id, make, model, year, status, daily_rate, location
+            SELECT
+                id,
+                make,
+                model,
+                year,
+                status,
+                daily_rate,
+                location
             FROM cars
+            WHERE created_by = ?
             ORDER BY status, make
-        `);
+        `, [req.session.uid]);
+
 
         res.render("dashboard", {
             title: "Fleet Dashboard | Velocity Rentals",
@@ -187,19 +208,24 @@ app.get("/dashboard", async (req, res) => {
             bookings,
             fleet,
             search,
+            role: req.session.role,
             error: null
         });
+
     } catch (err) {
         console.error(err);
         res.render("dashboard", {
+            title: "Fleet Dashboard | Velocity Rentals",
             metrics: {},
             bookings: [],
             fleet: [],
             search: "",
+            role: req.session.role,
             error: "Failed to load dashboard"
         });
     }
 });
+
 
 /* ---------- CAR DETAILS ---------- */
 
@@ -267,20 +293,29 @@ app.get("/cars/add", requireAgent, (req, res) => {
 
 app.post("/cars/add", requireAgent, async (req, res) => {
     try {
-        const car = new Car(req.body);
+        const car = new Car({
+            ...req.body,
+            created_by: req.session.uid 
+        });
+
         await car.create();
         res.redirect("/dashboard");
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Failed to add car");
     }
 });
 
+
 app.get("/cars/edit/:id", requireAgent, async (req, res) => {
     const carObj = new Car({ id: req.params.id });
     const car = await carObj.getById();
 
     if (!car) return res.status(404).send("Car not found");
+    if (car.created_by !== req.session.uid) {
+        return res.status(403).send("Not allowed");
+    }
 
     res.render("car-form", {
         title: "Edit Car",
@@ -289,15 +324,22 @@ app.get("/cars/edit/:id", requireAgent, async (req, res) => {
     });
 });
 
+
 app.post("/cars/edit/:id", requireAgent, async (req, res) => {
     try {
         const car = new Car({
             id: req.params.id,
-            ...req.body
+            ...req.body,
+            created_by: req.session.uid
         });
 
-        await car.update();
+        const updated = await car.update();
+        if (!updated) {
+            return res.status(403).send("Not allowed");
+        }
+
         res.redirect("/dashboard");
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Failed to update car");
@@ -306,14 +348,24 @@ app.post("/cars/edit/:id", requireAgent, async (req, res) => {
 
 app.post("/cars/delete/:id", requireAgent, async (req, res) => {
     try {
-        const car = new Car({ id: req.params.id });
-        await car.delete();
+        const car = new Car({
+            id: req.params.id,
+            created_by: req.session.uid
+        });
+
+        const deleted = await car.delete();
+        if (!deleted) {
+            return res.status(403).send("Not allowed");
+        }
+
         res.redirect("/dashboard");
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Failed to delete car");
     }
 });
+
 
 
 // Start server

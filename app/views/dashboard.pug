@@ -123,6 +123,8 @@ html(lang="en")
             .section-title
               h2 Fleet status
               p Inventory split by availability and location.
+              a.btn.btn-primary(href="/cars/add") + Add Car
+
             .card
               table.data-table
                 thead
@@ -131,7 +133,7 @@ html(lang="en")
                     th Location
                     th Rate / day
                     th Status
-                    th Details
+                    th Actions
                 tbody
                   if fleet && fleet.length
                     each car in fleet
@@ -144,6 +146,16 @@ html(lang="en")
                           span(class=`badge ${badgeClass}`)= car.status || '—'
                         td
                           a.btn.btn-outline(href=`/details/${car.id}`) View
+                          a.btn.btn-outline(href=`/cars/edit/${car.id}`) Edit
+                          form(
+                            method="post",
+                            action=`/cars/delete/${car.id}`,
+                            style="display:inline"
+                          )
+                            button.btn.btn-danger(
+                              type="submit",
+                              onclick="return confirm('Delete this car?')"
+                            ) Delete
                   else
                     tr
                       td(colspan="5") No cars found.
