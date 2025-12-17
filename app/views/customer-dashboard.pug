@@ -1,0 +1,102 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Customer Dashboard | Velocity Rentals
+
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/dashboard.css")
+
+  body
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href="/customer-dashboard") Dashboard
+            a(href="/logout") Logout
+
+    main.dashboard
+      section.hero
+        .container
+          .hero-content.dashboard-hero
+            .eyebrow Customer
+            h1 Welcome back
+            p Browse available cars and manage your bookings.
+
+            form.search-bar(method="get", action="/customer-dashboard")
+              input(
+                type="text",
+                name="search",
+                placeholder="Search cars by make, model, or location",
+                value=search || ""
+              )
+              button.btn.btn-primary(type="submit") Search
+              if search
+                a.btn.btn-outline(href="/customer-dashboard") Clear
+
+      section
+        .container
+          .section-title
+            h2 Available Cars
+
+          .card
+            table.data-table
+              thead
+                tr
+                  th Car
+                  th Location
+                  th Rate / day
+                  th Status
+              tbody
+                if cars && cars.length
+                  each car in cars
+                    tr
+                      td #{car.make} #{car.model} (#{car.year})
+                      td #{car.location || '—'}
+                      td £#{car.daily_rate}
+                      td
+                        span.badge.badge-available Available
+                else
+                  tr
+                    td(colspan="4") No cars available right now.
+
+      section
+        .container
+          .section-title
+            h2 My Bookings
+
+          .card
+            table.data-table
+              thead
+                tr
+                  th Booking
+                  th Car
+                  th Status
+                  th Start
+                  th End
+                  th Total
+              tbody
+                if bookings && bookings.length
+                  each b in bookings
+                    tr
+                      td #{'#' + b.id}
+                      td #{b.make} #{b.model}
+                      td
+                        span.badge= b.status
+                      td #{b.start_date}
+                      td #{b.end_date}
+                      td £#{b.total_price}
+                else
+                  tr
+                    td(colspan="6") You have no bookings yet.
+
+    footer
+      .container.footer-meta
+        span Velocity Rentals
+        span •
+        span Customer dashboard

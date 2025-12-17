@@ -226,6 +226,72 @@ app.get("/dashboard", async (req, res) => {
     }
 });
 
+/* ---------- CUSTOMER DASHBOARD ---------- */
+
+app.get("/customer-dashboard", async (req, res) => {
+    if (!req.session.uid) return res.redirect("/login");
+
+    if (req.session.role === "agent") {
+        return res.redirect("/dashboard");
+    }
+
+    try {
+        const search = (req.query.search || "").trim();
+        const likeSearch = `%${search}%`;
+
+        let carWhere = "status = 'available'";
+        const carParams = [];
+
+        if (search) {
+            carWhere += `
+              AND (
+                make LIKE ? OR
+                model LIKE ? OR
+                location LIKE ?
+              )
+            `;
+            carParams.push(likeSearch, likeSearch, likeSearch);
+        }
+
+        const cars = await db.query(
+            `SELECT id, make, model, year, daily_rate, location
+             FROM cars
+             WHERE ${carWhere}
+             ORDER BY make`,
+            carParams
+        );
+
+        const bookings = await db.query(
+            `
+            SELECT
+              b.id,
+              b.start_date,
+              b.end_date,
+              b.status,
+              b.total_price,
+              c.make,
+              c.model
+            FROM bookings b
+            JOIN cars c ON b.car_id = c.id
+            WHERE b.user_id = ?
+            ORDER BY b.start_date DESC
+            `,
+            [req.session.uid]
+        );
+
+        res.render("customer-dashboard", {
+            cars,
+            bookings,
+            search
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Failed to load customer dashboard");
+    }
+});
+
+
 
 /* ---------- CAR DETAILS ---------- */
 
