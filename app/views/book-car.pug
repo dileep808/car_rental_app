@@ -5,6 +5,7 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Book Car | Velocity Rentals
 
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
     link(rel="stylesheet", href="/home.css")
     link(rel="stylesheet", href="/dashboard.css")
 
@@ -12,29 +13,59 @@ html(lang="en")
     header
       .container
         nav.navbar
-          .logo Velocity Rentals
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
           .nav-links
             a(href="/customer-dashboard") Dashboard
             a(href="/logout") Logout
 
-    main.dashboard
+    main.sidebar-content.dashboard
       section.hero
         .container
           .hero-content.dashboard-hero
-            h1 Book #{car.make} #{car.model}
-            p £#{car.daily_rate} per day
+            .eyebrow Booking
+            h1 #{car.make} #{car.model} (#{car.year})
+            p.subtext
+              | £#{car.daily_rate} per day • #{car.location || 'Location not specified'}
 
       section
         .container
-          .card
+          .card(style="max-width:520px; margin:auto")
+            .section-title
+              h2 Select rental dates
+              p Pricing is calculated automatically based on duration.
+
             form(method="post", action=`/book/${car.id}`)
               .form-group
-                label Start date
-                input(type="date", name="start_date", required)
+                label(for="start_date") Start date
+                input.form-control(
+                  type="date",
+                  name="start_date",
+                  id="start_date",
+                  required
+                )
 
               .form-group
-                label End date
-                input(type="date", name="end_date", required)
+                label(for="end_date") End date
+                input.form-control(
+                  type="date",
+                  name="end_date",
+                  id="end_date",
+                  required
+                )
 
-              button.btn.btn-primary(type="submit") Confirm Booking
-              a.btn.btn-outline(href="/customer-dashboard") Cancel
+              .form-actions
+                button.btn.btn-primary(type="submit")
+                  i.fas.fa-check-circle
+                  |  Confirm booking
+
+                a.btn.btn-outline(href="/customer-dashboard")
+                  i.fas.fa-arrow-left
+                  |  Cancel
+
+    footer
+      .container.footer-meta
+        span Velocity Rentals
+        span •
+        span Secure booking
