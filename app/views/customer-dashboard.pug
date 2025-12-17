@@ -54,15 +54,15 @@ html(lang="en")
                   th Status
               tbody
                 if cars && cars.length
-                  each car in cars
+                    each car in cars
                     tr
-                      td #{car.make} #{car.model} (#{car.year})
-                      td #{car.location || '—'}
-                      td £#{car.daily_rate}
-                      td
-                        span.badge.badge-available Available
+                        td #{car.make} #{car.model} (#{car.year})
+                        td #{car.location || '—'}
+                        td £#{car.daily_rate}
+                        td
+                        a.btn.btn-primary(href=`/book/${car.id}`) Book
                 else
-                  tr
+                    tr
                     td(colspan="4") No cars available right now.
 
       section

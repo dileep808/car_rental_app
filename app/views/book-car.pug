@@ -1,0 +1,40 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Book Car | Velocity Rentals
+
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/dashboard.css")
+
+  body
+    header
+      .container
+        nav.navbar
+          .logo Velocity Rentals
+          .nav-links
+            a(href="/customer-dashboard") Dashboard
+            a(href="/logout") Logout
+
+    main.dashboard
+      section.hero
+        .container
+          .hero-content.dashboard-hero
+            h1 Book #{car.make} #{car.model}
+            p £#{car.daily_rate} per day
+
+      section
+        .container
+          .card
+            form(method="post", action=`/book/${car.id}`)
+              .form-group
+                label Start date
+                input(type="date", name="start_date", required)
+
+              .form-group
+                label End date
+                input(type="date", name="end_date", required)
+
+              button.btn.btn-primary(type="submit") Confirm Booking
+              a.btn.btn-outline(href="/customer-dashboard") Cancel

@@ -432,6 +432,71 @@ app.post("/cars/delete/:id", requireAgent, async (req, res) => {
     }
 });
 
+/* ---------- BOOK CAR (FORM) ---------- */
+
+app.get("/book/:carId", async (req, res) => {
+    if (!req.session.uid) return res.redirect("/login");
+    if (req.session.role !== "customer") return res.redirect("/dashboard");
+
+    const carId = Number(req.params.carId);
+
+    const car = (await db.query(
+        "SELECT * FROM cars WHERE id = ? AND status = 'available'",
+        [carId]
+    ))[0];
+
+    if (!car) return res.status(404).send("Car not available");
+
+    res.render("book-car", { car });
+});
+
+/* ---------- BOOK CAR (SUBMIT) ---------- */
+
+app.post("/book/:carId", async (req, res) => {
+    if (!req.session.uid) return res.redirect("/login");
+
+    const carId = Number(req.params.carId);
+    const { start_date, end_date } = req.body;
+
+    if (!start_date || !end_date)
+        return res.status(400).send("Dates required");
+
+    const car = (await db.query(
+        "SELECT daily_rate FROM cars WHERE id = ? AND status = 'available'",
+        [carId]
+    ))[0];
+
+    if (!car) return res.status(400).send("Car not available");
+
+    const start = new Date(start_date);
+    const end = new Date(end_date);
+
+    if (end <= start)
+        return res.status(400).send("Invalid date range");
+
+    const days =
+        Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+    const totalPrice = days * car.daily_rate;
+
+    await db.query(
+        `
+        INSERT INTO bookings
+        (car_id, user_id, start_date, end_date, total_price, status)
+        VALUES (?, ?, ?, ?, ?, 'booked')
+        `,
+        [carId, req.session.uid, start_date, end_date, totalPrice]
+    );
+
+    await db.query(
+        "UPDATE cars SET status='booked' WHERE id=?",
+        [carId]
+    );
+
+    res.redirect("/customer-dashboard");
+});
+
+
 
 
 // Start server
