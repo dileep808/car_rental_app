@@ -1,34 +1,92 @@
-//- profile.pug
 doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Profile | Velocity Rentals
+
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
     link(rel="stylesheet", href="/home.css")
     link(rel="stylesheet", href="/dashboard.css")
-  include sidebar.pug
-  body
-    .sidebar-shell
-      +sidebar('profile')
-      main.sidebar-content.dashboard
-        section.hero#overview
-          .container
-            .hero-content.dashboard-hero
-              .eyebrow Profile
-              h1 Coming soon
-              p Manage your account, preferences, and notifications—all from one place.
-              .quick-actions
-                a.btn.btn-outline(href="/dashboard") Back to dashboard
 
-        section
-          .container
-            .card
-              .section-title
-                h2 We're building this area
-                p Expect settings for account, team, notifications, and security.
-              p Coming soon. Check back later.
+  body
+    header
+      .container
+        nav.navbar
+          .logo
+            i.fas.fa-car
+            | Velocity Rentals
+          .nav-links
+            a(href=(role === 'agent' ? '/dashboard' : '/customer-dashboard')) Dashboard
+            a(href="/logout") Logout
+
+    main.sidebar-content.dashboard
+      section.hero
+        .container
+          .hero-content.dashboard-hero
+            .eyebrow Account
+            h1 My Profile
+            p Manage your personal details and security settings.
+
+      section
+        .container
+          .card(style="max-width:600px;margin:auto")
+            .section-title
+              h2 Profile details
+
+            if success
+              p.success-msg= success
+            if error
+              p.error-msg= error
+
+            form(method="post", action="/profile/update")
+              .form-group
+                label(for="full_name") Full name
+                input.form-control(
+                  type="text",
+                  name="full_name",
+                  id="full_name",
+                  value=user.full_name,
+                  required
+                )
+
+              .form-group
+                label(for="phone") Phone
+                input.form-control(
+                  type="text",
+                  name="phone",
+                  id="phone",
+                  value=user.phone || ''
+                )
+
+              .form-actions
+                button.btn.btn-primary(type="submit")
+                  i.fas.fa-save
+                  |  Save changes
+
+      section
+        .container
+          .card(style="max-width:600px;margin:auto;margin-top:24px")
+            .section-title
+              h2 Change password
+
+            form(method="post", action="/profile/password")
+              .form-group
+                label Current password
+                input.form-control(type="password", name="currentPassword", required)
+
+              .form-group
+                label New password
+                input.form-control(type="password", name="newPassword", required)
+
+              .form-group
+                label Confirm new password
+                input.form-control(type="password", name="confirmPassword", required)
+
+              .form-actions
+                button.btn.btn-danger(type="submit")
+                  i.fas.fa-lock
+                  |  Update password
 
     footer
       .container.footer-meta

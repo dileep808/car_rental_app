@@ -344,7 +344,42 @@ app.get("/profile", async (req, res) => {
         [req.session.uid]
     ))[0];
 
-    res.render("profile", { title: "Profile", user });
+    res.render("profile", {
+        user,
+        role: user.role,
+        success: null,
+        error: null
+    });
+});
+app.post("/profile/update", async (req, res) => {
+    if (!req.session.uid) return res.redirect("/login");
+
+    const { full_name, phone } = req.body;
+
+    if (!full_name)
+        return res.render("profile", {
+            user: { full_name, phone },
+            role: req.session.role,
+            error: "Full name is required",
+            success: null
+        });
+
+    await db.query(
+        "UPDATE users SET full_name=?, phone=? WHERE id=?",
+        [full_name, phone, req.session.uid]
+    );
+
+    const user = (await db.query(
+        "SELECT full_name, email, phone, role FROM users WHERE id=?",
+        [req.session.uid]
+    ))[0];
+
+    res.render("profile", {
+        user,
+        role: user.role,
+        success: "Profile updated successfully",
+        error: null
+    });
 });
 
 
