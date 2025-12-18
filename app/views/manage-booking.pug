@@ -1,0 +1,45 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Manage Booking | Velocity Rentals
+
+    link(rel="stylesheet", href="/home.css")
+    link(rel="stylesheet", href="/dashboard.css")
+
+  body
+    header
+      .container
+        nav.navbar
+          .logo Velocity Rentals
+          .nav-links
+            a(href="/dashboard") Dashboard
+            a(href="/logout") Logout
+
+    main.sidebar-content.dashboard
+      section.hero
+        .container
+          .hero-content.dashboard-hero
+            .eyebrow Booking
+            h1 Manage Booking ##{booking.id}
+            p #{booking.make} #{booking.model} — #{booking.customer}
+
+      section
+        .container
+          .card(style="max-width:500px;margin:auto")
+            .section-title
+              h2 Update booking status
+
+            form(method="post", action=`/agent/bookings/${booking.id}`)
+              .form-group
+                label Status
+                select.form-control(name="status", required)
+                  option(value="booked", selected=booking.status==="booked") Booked
+                  option(value="ongoing", selected=booking.status==="ongoing") Ongoing
+                  option(value="completed", selected=booking.status==="completed") Completed
+                  option(value="cancelled", selected=booking.status==="cancelled") Cancelled
+
+              .form-actions
+                button.btn.btn-primary(type="submit") Update
+                a.btn.btn-outline(href="/dashboard") Cancel

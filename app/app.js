@@ -496,6 +496,70 @@ app.post("/book/:carId", async (req, res) => {
     res.redirect("/customer-dashboard");
 });
 
+/* ---------- AGENT MANAGE BOOKING ---------- */
+
+app.get("/agent/bookings/:id", requireAgent, async (req, res) => {
+    const bookingId = Number(req.params.id);
+
+    const booking = (await db.query(
+        `
+        SELECT
+          b.id,
+          b.status,
+          c.make,
+          c.model,
+          u.full_name AS customer
+        FROM bookings b
+        JOIN cars c ON b.car_id = c.id
+        JOIN users u ON b.user_id = u.id
+        WHERE b.id = ? AND c.created_by = ?
+        `,
+        [bookingId, req.session.uid]
+    ))[0];
+
+    if (!booking) return res.status(404).send("Booking not found");
+
+    res.render("manage-booking", { booking });
+});
+
+app.post("/agent/bookings/:id", requireAgent, async (req, res) => {
+    const bookingId = Number(req.params.id);
+    const { status } = req.body;
+
+    const booking = (await db.query(
+        `
+        SELECT b.car_id
+        FROM bookings b
+        JOIN cars c ON b.car_id = c.id
+        WHERE b.id = ? AND c.created_by = ?
+        `,
+        [bookingId, req.session.uid]
+    ))[0];
+
+    if (!booking) return res.status(403).send("Not allowed");
+
+    await db.query(
+        "UPDATE bookings SET status=? WHERE id=?",
+        [status, bookingId]
+    );
+
+    // 🔥 AUTO CAR STATUS UPDATE
+    if (status === "completed" || status === "cancelled") {
+        await db.query(
+            "UPDATE cars SET status='available' WHERE id=?",
+            [booking.car_id]
+        );
+    }
+
+    if (status === "ongoing") {
+        await db.query(
+            "UPDATE cars SET status='booked' WHERE id=?",
+            [booking.car_id]
+        );
+    }
+
+    res.redirect("/dashboard");
+});
 
 
 
