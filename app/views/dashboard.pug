@@ -85,11 +85,12 @@ html(lang="en")
                   i.fas.fa-arrow-up
                   span Closed from completed
 
-        section#bookings
+        // ===== BOOKINGS =====
+        section
           .container
             .section-title
-              h2 Active bookings
-              p Upcoming and in-progress rentals that affect availability.
+              h2 Active Bookings
+
             .card
               table.data-table
                 thead
@@ -101,22 +102,24 @@ html(lang="en")
                     th Start
                     th End
                     th Total
+                    th Action
                 tbody
                   if bookings && bookings.length
                     each b in bookings
-                      - const badgeClass = (() => { const s = (b.status || '').toLowerCase(); if (s === 'available') return 'badge-available'; if (s === 'ongoing') return 'badge-ongoing'; if (s === 'maintenance') return 'badge-maintenance'; return 'badge-booked'; })();
                       tr
                         td #{'#' + b.id}
                         td #{b.make} #{b.model} (#{b.year})
                         td #{b.customer}
                         td
-                          span(class=`badge ${badgeClass}`)= b.status || '—'
-                        td #{fmtDate(b.start_date)}
-                        td #{fmtDate(b.end_date)}
-                        td= money(b.total_price)
+                          span.badge= b.status
+                        td #{b.start_date}
+                        td #{b.end_date}
+                        td £#{b.total_price}
+                        td
+                          a.btn.btn-outline(href=`/agent/bookings/${b.id}`) Manage
                   else
                     tr
-                      td(colspan="7") No active bookings.
+                      td(colspan="8") No bookings found.
 
         section#fleet
           .container
