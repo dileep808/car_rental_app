@@ -519,3 +519,12 @@ select.form-control {
   margin-top: 20px;
 }
 
+.success-msg {
+  color: #10b981;
+  margin-bottom: 12px;
+}
+
+.error-msg {
+  color: #ef4444;
+  margin-bottom: 12px;
+}

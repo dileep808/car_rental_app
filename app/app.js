@@ -382,6 +382,61 @@ app.post("/profile/update", async (req, res) => {
     });
 });
 
+app.post("/profile/password", async (req, res) => {
+    if (!req.session.uid) return res.redirect("/login");
+
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        return res.render("profile", {
+            user: {},
+            role: req.session.role,
+            error: "All password fields are required",
+            success: null
+        });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.render("profile", {
+            user: {},
+            role: req.session.role,
+            error: "New passwords do not match",
+            success: null
+        });
+    }
+
+    const userRow = (await db.query(
+        "SELECT password, full_name, phone, role FROM users WHERE id=?",
+        [req.session.uid]
+    ))[0];
+
+    const bcrypt = require("bcryptjs");
+    const match = await bcrypt.compare(currentPassword, userRow.password);
+
+    if (!match) {
+        return res.render("profile", {
+            user: userRow,
+            role: userRow.role,
+            error: "Current password is incorrect",
+            success: null
+        });
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await db.query(
+        "UPDATE users SET password=? WHERE id=?",
+        [hashed, req.session.uid]
+    );
+
+    res.render("profile", {
+        user: userRow,
+        role: userRow.role,
+        success: "Password updated successfully",
+        error: null
+    });
+});
+
+
 
 app.get("/cars/add", requireAgent, (req, res) => {
     res.render("car-form", {
